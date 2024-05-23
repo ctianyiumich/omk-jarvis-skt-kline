@@ -15,8 +15,8 @@ import matplotlib.image as mpimg
 import matplotlib as mpl
 import seaborn as sns
 
-zh_font = "Songti SC"
-mpl.rcParams['font.sans-serif'] = [zh_font]  # 指定默认字体：解决plot不能显示中文问题
+zh_font = "Songti SC" # 暂时替代 SimHei
+mpl.rcParams['font.sans-serif'] = [zh_font]  
 mpl.rcParams['axes.unicode_minus'] = False
 sns.set(font_scale=1.5, font=zh_font)
 
@@ -183,13 +183,14 @@ class IndividualStock:
 def get_fig_dirs_list(xlsx_df, lag_terms_list):
     fig_dirs = []
     for i in range(len(xlsx_df)):
-        stock = IndividualStock(
-            ticker=xlsx_df.code[i],
-            start_date=xlsx_df.start_date[i],
-            end_date=xlsx_df.end_date[i],
-            frequency=xlsx_df.frequency[i])
-        fig = stock.plot_candlesticks(lags=lag_terms_list)
-        fig_dirs.append(fig)
+        if ('HK' not in xlsx_df.code[i]) and ('WI' not in xlsx_df.code[i]) and (xlsx_df.code[i][0]!='5'): # 排除港股、指数和ETF
+            stock = IndividualStock(
+                ticker=xlsx_df.code[i],
+                start_date=xlsx_df.start_date[i],
+                end_date=xlsx_df.end_date[i],
+                frequency=xlsx_df.frequency[i])
+            fig = stock.plot_candlesticks(lags=lag_terms_list)
+            fig_dirs.append(fig)
     return fig_dirs
 
 
